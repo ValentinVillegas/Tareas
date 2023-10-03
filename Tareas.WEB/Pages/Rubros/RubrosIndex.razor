@@ -1,0 +1,72 @@
+﻿@page "/rubros"
+@inject IRepository repositorio
+
+<h3>Catálogo de Rubros</h3>
+
+@if(Rubros is null)
+{
+    <div class="spinner"/>
+
+}else
+{
+    <div class="card">
+        <div class=" card-header">
+            <span>
+                <i class="oi oi-spreadsheet"></i> Rubros
+                <a class="btn btn-sm btn-primary float-end"><i class="oi oi-plus"></i> Nuevo Rubro</a>
+            </span>
+        </div>
+
+        <div class="card-body">
+            <div class="mb-2" style="display:flex; flex-wrap:wrap; align-items:center;">
+                <div>
+                    <input type="text" style="width:400px" class="form-control" id="titulo" placeholder="Buscar rubro..."/>
+                </div>
+
+                <div class="mx-1">
+                    <button type="button" class="btn btn-outline-primary"><i class="oi oi-layers" /> Filtrar</button>
+                    <button type="button" class="btn btn-outline-danger"><i class="oi oi-grid-three-up" /> Limpiar</button>
+                </div>
+            </div>
+
+            <ListaGenerica ListaElementos="Rubros">
+                <Body>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Acciones</th>
+                                <th style="width: 220px"></th>
+                                <th>Rubro</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var rubro in Rubros!)
+                            {
+                                <tr>
+                                    <td>
+                                        <a class="btn btn-warning">Editar</a>
+                                        <button class="btn btn-danger">Borrar</button>
+                                    </td>
+                                    <td>
+                                        @rubro.Nombre
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </Body>
+            </ListaGenerica>
+        </div>
+    </div>
+}
+
+@code {
+    public List<Rubro>? Rubros { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var responseHttp = await repositorio.Get<List<Rubro>>("api/Rubros");
+        Rubros = responseHttp.Response;
+    }
+}

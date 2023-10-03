@@ -1,0 +1,45 @@
+﻿@typeparam Titem
+
+@if(ListaElementos is null)
+{
+    @if(Cargando is null)
+    {
+        <div class="spinner"/>
+    }
+    else
+    {
+        @Cargando
+    }
+}else if(ListaElementos.Count == 0)
+{
+    @if(SinRegistros is null)
+    {
+        <div class="align-items-center">
+            <p>No hay registros para mostrar...</p>
+        </div>
+    }
+    else
+    {
+        @SinRegistros
+    }
+}
+else
+{
+    @Body
+}
+
+@code {
+    [Parameter]
+    public RenderFragment? Cargando { get; set; }
+
+    [Parameter]
+    public RenderFragment? SinRegistros { get; set; }
+
+    [Parameter]
+    [EditorRequired]
+    public RenderFragment Body { get; set; } = null!;
+
+    [Parameter]
+    [EditorRequired]
+    public List<Titem> ListaElementos { get; set; } = null!;
+}
