@@ -19,6 +19,7 @@ namespace Tareas.SharedComponents.Repositorio
         }
         public async Task<HttpResponseWrapper<T>> Get<T>(string url)
         {
+
             var responseHttp = await _httpClient.GetAsync(url);
 
             if (responseHttp.IsSuccessStatusCode)
@@ -28,6 +29,7 @@ namespace Tareas.SharedComponents.Repositorio
             }
 
             return new HttpResponseWrapper<T>(default, true, responseHttp);
+
         }
 
         public async Task<HttpResponseWrapper<object>> Post<T>(string url, T model)

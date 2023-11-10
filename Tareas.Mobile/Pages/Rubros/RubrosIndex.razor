@@ -1,0 +1,108 @@
+﻿@page "/rubros"
+@inject IRepository repositorio
+@inject SweetAlertService swAlSe
+@inject NavigationManager navManager
+
+<h3>Catálogo de Rubros</h3>
+
+@if(Rubros is null)
+{
+    //<div class="spinner"/>
+    <p>Cargando...</p>
+}else
+{
+    <div class="card">
+        <div class=" card-header">
+            <span>
+                <i class="oi oi-spreadsheet"></i> Rubros
+                <a class="btn btn-sm btn-primary float-end" href="/rubros/nuevo"><i class="oi oi-plus"></i> Nuevo Rubro</a>
+            </span>
+        </div>
+
+        <div class="card-body">
+            <div class="mb-2" style="display:flex; flex-wrap:wrap; align-items:center;">
+                <div>
+                    <input type="text" style="width:300px" class="form-control" id="titulo" placeholder="Buscar rubro..."/>
+                </div>
+
+                <div class="mx-1">
+                    <button type="button" class="btn btn-outline-primary"><i class="oi oi-layers" /> Filtrar</button>
+                    <button type="button" class="btn btn-outline-danger"><i class="oi oi-grid-three-up" /> Limpiar</button>
+                </div>
+            </div>
+
+            <ListaGenerica ListaElementos="Rubros">
+                <Body>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr class="text-center">
+                                <th width="200">Rubro</th>
+                                <th width="50">Trabajadores</th>
+                                <th width="800">Acciones</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var rubro in Rubros!)
+                            {
+                                <tr>
+                                    <td>@rubro.Nombre</td>
+                                    <td class="text-center">@rubro.CantTrabajadores</td>
+                                    <td class="text-center">
+                                        <a class="btn btn-warning" href="/rubros/editar/@rubro.Id"><i class="oi oi-pencil"/></a>
+                                        <button class="btn btn-danger" onclick="@(() => EliminarRubroAsync(rubro.Id))"><i class="oi oi-trash"/></button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </Body>
+            </ListaGenerica>
+        </div>
+    </div>
+}
+
+@code {
+    public List<Rubro> Rubros { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAsync();
+    }
+
+    private async Task LoadAsync()
+    {
+        var responseHttp = await repositorio.Get<List<Rubro>>("/api/rubros");
+        Rubros = responseHttp.Response;
+    }
+
+    private async Task EliminarRubroAsync(int idRubro)
+    {
+        var confirmacion = await swAlSe.FireAsync(new SweetAlertOptions
+        {
+            Title = "Confirmación",
+            Text = "¿Desea eliminar el rubro?",
+            Icon = SweetAlertIcon.Question,
+            ShowCancelButton = true,
+            CancelButtonText = "No",
+            ConfirmButtonText = "Si"
+        });
+
+        if (string.IsNullOrEmpty(confirmacion.Value)) return;
+
+        var responseHttp = await repositorio.Delete($"/api/rubros/{idRubro}");
+
+        if (responseHttp.Error)
+        {
+            if(responseHttp.HttpResponseMessage.StatusCode != HttpStatusCode.NotFound)
+            {
+                var message = await responseHttp.GetErrorMessageAsync();
+                await swAlSe.FireAsync("Error", message, SweetAlertIcon.Error);
+                return;
+            }
+        }
+
+        await LoadAsync();
+        StateHasChanged();
+    }
+}

@@ -1,0 +1,63 @@
+﻿@page "/rubros/editar/{IdRubro:int}"
+@inject IRepository repository
+@inject NavigationManager navManager
+@inject SweetAlertService swAlSe
+
+<h3>Editar Rubro</h3>
+
+@if(rubro is null)
+{
+    <p>Cargando...</p>
+}
+else
+{
+    <RubroForm @ref="rubroForm" Rubro="rubro" OnValidSubmit="GuardarAsync" ReturnAction="Regresar"/>
+}
+
+@code {
+    private Rubro? rubro;
+    private RubroForm? rubroForm;
+
+    [Parameter]
+    public int IdRubro { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var responseHttp = await repository.Get<Rubro>($"/api/rubros/{IdRubro}");
+
+        if (responseHttp.Error)
+        {
+            if (responseHttp.HttpResponseMessage.StatusCode == HttpStatusCode.NotFound)
+            {
+                navManager.NavigateTo("/rubros");
+                return;
+            }
+
+            var message = await responseHttp.GetErrorMessageAsync();
+            await swAlSe.FireAsync("Error", message, SweetAlertIcon.Error);
+            return;
+        }
+
+        rubro = responseHttp.Response;
+    }
+
+    private async Task GuardarAsync()
+    {
+        var responseHttp = await repository.Put("/api/rubros", rubro);
+
+        if (responseHttp.Error)
+        {
+            var message = await responseHttp.GetErrorMessageAsync();
+            await swAlSe.FireAsync("Error", message, SweetAlertIcon.Error);
+            return;
+        }
+
+        rubroForm.formularioEnviado = true;
+        Regresar();
+    }
+
+    private void Regresar()
+    {
+        navManager.NavigateTo("/rubros");
+    }
+}

@@ -12,6 +12,10 @@ namespace Tareas.Shared.Models
         [MaxLength(6, ErrorMessage = "El campo {0} no debe tener más de {1} caracteres.")]
         public string CveEmpleado { get; set; } = null!;
 
+        public Empleado? Empleado { get; set; }
+
+        public int EmpleadoId { get; set; }
+
         [Display(Name = "Correo")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         [MaxLength(100, ErrorMessage = "El campo {0} no debe tener más de {1} caracteres.")]
@@ -22,5 +26,7 @@ namespace Tareas.Shared.Models
         [MaxLength(20, ErrorMessage = "El campo {0} no debe tener más de {1} caracteres")]
         public string Password { get; set; } = null!;
         public bool EsJefe { get; set; } = false;
+
+        public Rubro? Rubro { get; set; }
     }
 }

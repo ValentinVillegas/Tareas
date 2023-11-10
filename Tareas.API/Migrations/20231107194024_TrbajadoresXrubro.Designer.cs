@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Tareas.API.Data;
 
@@ -10,9 +11,11 @@ using Tareas.API.Data;
 namespace Tareas.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20231107194024_TrbajadoresXrubro")]
+    partial class TrbajadoresXrubro
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -20,58 +23,6 @@ namespace Tareas.API.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("Tareas.Shared.Models.Departamento", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Nombre")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Nombre")
-                        .IsUnique();
-
-                    b.ToTable("Departamentos");
-                });
-
-            modelBuilder.Entity("Tareas.Shared.Models.Empleado", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("CveEmpleado")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.Property<int>("DepartamentoId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Nombre")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DepartamentoId");
-
-                    b.HasIndex("Nombre")
-                        .IsUnique();
-
-                    b.ToTable("Empleados");
-                });
 
             modelBuilder.Entity("Tareas.Shared.Models.Rubro", b =>
                 {
@@ -118,9 +69,6 @@ namespace Tareas.API.Migrations
                         .HasMaxLength(6)
                         .HasColumnType("nvarchar(6)");
 
-                    b.Property<int>("EmpleadoId")
-                        .HasColumnType("int");
-
                     b.Property<bool>("EsJefe")
                         .HasColumnType("bit");
 
@@ -134,46 +82,20 @@ namespace Tareas.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EmpleadoId");
-
                     b.HasIndex("RubroId");
 
                     b.ToTable("RubrosEncargados");
                 });
 
-            modelBuilder.Entity("Tareas.Shared.Models.Empleado", b =>
-                {
-                    b.HasOne("Tareas.Shared.Models.Departamento", "Departamento")
-                        .WithMany("Empleados")
-                        .HasForeignKey("DepartamentoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Departamento");
-                });
-
             modelBuilder.Entity("Tareas.Shared.Models.RubroEncargados", b =>
                 {
-                    b.HasOne("Tareas.Shared.Models.Empleado", "Empleado")
-                        .WithMany()
-                        .HasForeignKey("EmpleadoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Tareas.Shared.Models.Rubro", "Rubro")
                         .WithMany("Encargados")
                         .HasForeignKey("RubroId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Empleado");
-
                     b.Navigation("Rubro");
-                });
-
-            modelBuilder.Entity("Tareas.Shared.Models.Departamento", b =>
-                {
-                    b.Navigation("Empleados");
                 });
 
             modelBuilder.Entity("Tareas.Shared.Models.Rubro", b =>

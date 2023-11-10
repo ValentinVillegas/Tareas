@@ -19,7 +19,7 @@ namespace Tareas.SharedComponents.Repositorio
             HttpResponseMessage = httpResponseMessage;
         }
 
-        public async Task<string?> GetErrorMessage()
+        public async Task<string?> GetErrorMessageAsync()
         {
             if(!Error) return null;
 
@@ -39,7 +39,7 @@ namespace Tareas.SharedComponents.Repositorio
 
             }else if (statusCode == HttpStatusCode.Forbidden)
             {
-                return "No tienes permisos para realizar  esta operación";
+                return "No tienes permisos para realizar esta operación";
             }
 
             return "Ocurrió un error inesperado";

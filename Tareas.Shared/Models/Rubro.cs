@@ -15,5 +15,8 @@ namespace Tareas.Shared.Models
         public Int64 Folio { get; set; }
 
         public ICollection<RubroEncargados>? Encargados { get; set; }
+
+        [Display(Name = "Cantidad Trabajadores")]
+        public int CantTrabajadores => Encargados == null || Encargados.Count == 0 ? 0 : Encargados.Count;
     }
 }

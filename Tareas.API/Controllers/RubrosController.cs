@@ -35,18 +35,43 @@ namespace Tareas.API.Controllers
         [HttpPost]
         public async Task<IActionResult> PostAsync(Rubro rubro)
         {
-            _context.Rubros.Add(rubro);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.Rubros.Add(rubro);
+                await _context.SaveChangesAsync();
+                return Ok(rubro);
+            }
+            catch (DbUpdateException dbUpdateException)
+            {
+                if (dbUpdateException.InnerException!.Message.Contains("duplicate")) return BadRequest("Ya existe un rubro con el mismo nombre");
 
-            return Ok(rubro);
+                return BadRequest(dbUpdateException.Message);
+            }
+            catch (Exception exception)
+            {
+                return BadRequest(exception.Message);
+            }
         }
 
         [HttpPut]
         public async Task<IActionResult> PutAsync(Rubro rubro)
         {
-            _context.Rubros.Update(rubro);
-            await _context.SaveChangesAsync();
-            return Ok(rubro);
+            try
+            {
+                _context.Rubros.Update(rubro);
+                await _context.SaveChangesAsync();
+                return Ok(rubro);
+            }
+            catch (DbUpdateException dbUpdateException)
+            {
+                if (dbUpdateException.InnerException!.Message.Contains("duplicate")) return BadRequest("Ya existe un rubro con el mismo nombre");
+
+                return BadRequest(dbUpdateException.Message);
+            }
+            catch (Exception exception)
+            {
+                return BadRequest(exception.Message);
+            }
         }
 
         [HttpDelete("{id:int}")]

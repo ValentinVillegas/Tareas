@@ -17,7 +17,7 @@
 
         <!-- App Identifier -->
         <ApplicationId>com.companyname.tareas.mobile</ApplicationId>
-        <ApplicationIdGuid>F1547FBC-0380-40B8-8363-55D0E7194965</ApplicationIdGuid>
+        <ApplicationIdGuid>EBA3450D-E115-4973-B770-0C16EAD31627</ApplicationIdGuid>
 
         <!-- Versions -->
         <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
@@ -50,7 +50,20 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="CurrieTechnologies.Razor.SweetAlert2" Version="5.5.0" />
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Tareas.SharedComponents\Tareas.SharedComponents.csproj" />
+      <ProjectReference Include="..\Tareas.Shared\Tareas.Shared.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Update="Microsoft.Extensions.Logging.Abstractions">
+        <NoWarn>NU1605</NoWarn>
+      </PackageReference>
+      <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.1" />
     </ItemGroup>
 
 </Project>

@@ -1,0 +1,32 @@
+﻿@page "/rubros/editar/{IdRubro:int}"
+
+@inject IRepository repository
+@inject NavigationManager navigationManager
+
+
+<h3>Editar Rubro</h3>
+
+@code {
+    private Rubro rubro;
+
+    [Parameter]
+    public int IdRubro { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var responseHttp = await repository.Get<Rubro>($"/api/rubros/{IdRubro}");
+
+        if (responseHttp.Error)
+        {
+            if(responseHttp.HttpResponseMessage.StatusCode == HttpStatusCode.NotFound)
+            {
+                navigationManager.NavigateTo("/rubros");
+                return;
+            }
+
+            var message = await responseHttp.GetErrorMessageAsync();
+            //TODO: Implementar SweetAlertService
+            // await sweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
+        }
+    }
+}
