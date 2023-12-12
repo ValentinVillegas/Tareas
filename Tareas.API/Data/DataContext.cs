@@ -18,7 +18,6 @@ namespace Tareas.API.Data
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<Departamento>().HasIndex(x => x.Nombre).IsUnique();
-            modelBuilder.Entity<Empleado>().HasIndex(x => x.Nombre).IsUnique();
             modelBuilder.Entity<Rubro>().HasIndex(x => x.Nombre).IsUnique();
         }
     }

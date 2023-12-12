@@ -5,40 +5,15 @@
 <EditForm EditContext="editContext" OnValidSubmit="OnValidSubmit">
     <DataAnnotationsValidator />
 
-    <div class="mb-3">
-        <label>Nombre del rubro:</label>
-        <div>
-            <InputText class="form-control" @bind-Value="@Rubro.Nombre" />
-            <ValidationMessage For="@(() => Rubro.Nombre)" />
+        <div class="mb-3">
+            <label>Nombre del rubro:</label>
+            <div>
+                <InputText class="form-control" @bind-Value="@Rubro.Nombre" />
+                <ValidationMessage For="@(() => Rubro.Nombre)" />
+            </div>
         </div>
-    </div>
 
-    <p>Personal al que se le pueden asignar tareas</p>
 
-@*     <table>
-        <thead>
-            <tr>
-                <th># Empleado</th>
-                <th>Nombre</th>
-                <th>Correo</th>
-                <th>Password</th>
-                <th>Es jefe</th>
-            </tr>
-        </thead>
-
-        <tbody>
-            @foreach (var encargado in Rubro.Encargados!)
-            {
-                <tr>
-                    <th>@encargado.CveEmpleado</th>
-                    <th>Nombre Nombre Nombre</th>
-                    <th>@encargado.Correo</th>
-                    <th>@encargado.Password</th>
-                    <th>@encargado.EsJefe</th>
-                </tr>
-            }
-        </tbody>
-    </table> *@
 
     <button type="button">Agrear empleado</button>
     <button class="btn btn-success" type="submit"><i class="oi oi-check" /></button>

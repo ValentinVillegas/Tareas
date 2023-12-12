@@ -19,7 +19,7 @@ namespace Tareas.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAsync()
         {
-            return Ok(await _context.Departamentos.ToListAsync());
+            return Ok(await _context.Departamentos.Include(d => d.Empleados).ToListAsync());
         }
 
         [HttpGet("idDepartamento:int")]
@@ -79,7 +79,7 @@ namespace Tareas.API.Controllers
 
             if (departamento == null) return NotFound();
 
-            _context.Remove(departamento);
+            _context.Departamentos.Remove(departamento);
             await _context.SaveChangesAsync();
             return NoContent();
         }

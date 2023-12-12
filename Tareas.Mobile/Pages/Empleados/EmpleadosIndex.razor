@@ -1,0 +1,61 @@
+﻿@page "/empleados"
+@inject IRepository repositorio
+
+@if(Empleados is null)
+{
+    <p>Cargando...</p>
+}
+else
+{
+    <div class="card">
+        <div class=" card-header">
+            <span>
+                <i class="oi oi-person"></i> Empleados
+                <a class="btn btn-sm btn-primary float-end" href="/empleados/nuevo"><i class="oi oi-plus"/> Nuevo empleado</a>
+            </span>
+        </div>
+
+        <div class=" card-body">
+            <div class="mb-2" style="display:flex; flex-wrap:wrap; align-items:center;">
+                @* TODO: PENDIENETE IMPLEMENTAR BOTONES DE FILTRADO Y PAGINACIÓN *@
+            </div>
+
+            <ListaGenerica ListaElementos="Empleados">
+                <Body>
+                    <table class="table-striped">
+                        <thead>
+                            <tr class="text-center">
+                                <th>Clave</th>
+                                <th>Nombre</th>
+                                <th>Departamento</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach(var empleado in Empleados){
+                                <tr>
+                                    <td>@empleado.CveEmpleado</td>
+                                    <td>@empleado.Nombre</td>
+                                    <td>@empleado.Departamento.Nombre</td>
+                                    <td></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </Body>
+            </ListaGenerica>
+        </div>
+    </div>
+}
+
+@code {
+    public List<Empleado> Empleados { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var responseHttp = await repositorio.Get<List<Empleado>>("/api/empleados");
+        Empleados = responseHttp.Response;
+    }
+
+}
