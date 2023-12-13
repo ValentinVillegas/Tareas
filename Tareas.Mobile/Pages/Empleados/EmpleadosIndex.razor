@@ -10,8 +10,8 @@ else
     <div class="card">
         <div class=" card-header">
             <span>
-                <i class="oi oi-person"></i> Empleados
-                <a class="btn btn-sm btn-primary float-end" href="/empleados/nuevo"><i class="oi oi-plus"/> Nuevo empleado</a>
+                <i class="oi oi-person"></i> Catálogo de empleados
+                <a class="btn btn-sm btn-primary float-end" href="/empleados/nuevo"><i class="oi oi-plus"/> Nuevo</a>
             </span>
         </div>
 
@@ -22,23 +22,21 @@ else
 
             <ListaGenerica ListaElementos="Empleados">
                 <Body>
-                    <table class="table-striped">
+                    <table class="table table-striped">
                         <thead>
                             <tr class="text-center">
-                                <th>Clave</th>
-                                <th>Nombre</th>
-                                <th>Departamento</th>
-                                <th></th>
+                                <th width="100">Clave</th>
+                                <th width="300">Nombre</th>
+                                <th width="300">Departamento</th>
                             </tr>
                         </thead>
 
                         <tbody>
                             @foreach(var empleado in Empleados){
                                 <tr>
-                                    <td>@empleado.CveEmpleado</td>
-                                    <td>@empleado.Nombre</td>
-                                    <td>@empleado.Departamento.Nombre</td>
-                                    <td></td>
+                                    <td class="align-middle"><a href="/empleados/editar/@empleado.Id" style="text-decoration:none;">@empleado.CveEmpleado</a></td>
+                                    <td class="align-middle">@empleado.Nombre</td>
+                                    <td class="align-middle">@empleado.Departamento.Nombre</td>
                                 </tr>
                             }
                         </tbody>

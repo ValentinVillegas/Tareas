@@ -1,5 +1,104 @@
-﻿<h3>EmpleadoForm</h3>
+﻿@inject IRepository repositorio
+@inject SweetAlertService swAlSe
+
+<NavigationLock OnBeforeInternalNavigation="OnBeforeInternalNavigation"/>
+
+<EditForm EditContext="editContext" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator/>
+
+    <div class="mb-3">
+        <label>Número de empleado:</label>
+        <div>
+            <InputText class="form-control" @bind-Value="Empleado.CveEmpleado"/>
+            <ValidationMessage For="@(()=> Empleado.CveEmpleado)"/>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label>Nombre:</label>
+        <div>
+            <InputText class="form-control" @bind-Value="Empleado.Nombre" />
+            <ValidationMessage For="@(()=> Empleado.Nombre)" />
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label>Departamento:</label>
+        <div>
+            <select class="form-select" @bind="@Empleado.DepartamentoId">
+                <option value="0">-- Seleccione un Departamento --</option>
+                @if(departamentos  is not null)
+                {
+                    @foreach (var departamento in departamentos)
+                    {
+                        <option value="@departamento.Id">@departamento.Nombre</option>
+                    }
+                }
+            </select>
+        </div>
+    </div>
+
+    <button class="btn btn-success" type="submit"><i class="oi oi-check" /> Guardar</button>
+    <button type="button" class="btn btn-warning" @onclick="ReturnAction"><i class="oi oi-chevron-left" /> Regresar</button>
+</EditForm>
 
 @code {
+    private EditContext editContext = null;
 
+    [Parameter]
+    [EditorRequired]
+    public Empleado Empleado { get; set; } = null!;
+
+    [Parameter]
+    [EditorRequired]
+    public EventCallback OnValidSubmit { get; set; }
+
+    [Parameter]
+    [EditorRequired]
+    public EventCallback ReturnAction { get; set; }
+
+    private List<Departamento> departamentos;
+
+    public bool formularioEnviado { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        editContext = new(Empleado);
+        await CargarDepartamentosAsync();
+    }
+
+    private async Task CargarDepartamentosAsync()
+    {
+        var responseHttp = await repositorio.Get<List<Departamento>>("/api/departamentos");
+
+        if (responseHttp.Error)
+        {
+            var message = await responseHttp.GetErrorMessageAsync();
+            await swAlSe.FireAsync("Error", message, SweetAlertIcon.Error);
+            return;
+        }
+
+        departamentos = responseHttp.Response;
+    }
+
+    private async Task OnBeforeInternalNavigation(LocationChangingContext context)
+    {
+        var formularioModificado = editContext.IsModified();
+
+        if (!formularioModificado || formularioEnviado) return;
+
+        var confirmacion = await swAlSe.FireAsync(new SweetAlertOptions
+        {
+            Title = "Confirmación",
+            Text = "¿Deseas salir sin guardar los cambios?",
+            Icon = SweetAlertIcon.Question,
+            ShowCancelButton = true,
+            CancelButtonText = "No",
+            ConfirmButtonText = "Si"
+        });
+
+        if (!string.IsNullOrEmpty(confirmacion.Value)) return;
+
+        context.PreventNavigation();
+    }
 }
