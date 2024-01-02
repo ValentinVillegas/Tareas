@@ -1,4 +1,5 @@
-﻿@inject IRepository repositorio
+﻿@using Tareas.Shared.Enums;
+@inject IRepository repositorio
 @inject SweetAlertService swAlSe
 
 <NavigationLock OnBeforeInternalNavigation="OnBeforeInternalNavigation"/>
@@ -33,6 +34,18 @@
                     {
                         <option value="@departamento.Id">@departamento.Nombre</option>
                     }
+                }
+            </select>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label>Estatus:</label>
+        <div>
+            <select class="form-select" @bind="@Empleado.Estatus">
+                @foreach(var estatus in Enum.GetValues(typeof(EstatusEmpleado)))
+                {
+                    <option value="@estatus">@estatus</option>
                 }
             </select>
         </div>

@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Tareas.API.Data;
+using Tareas.API.Helpers;
+using Tareas.Shared.DTOs;
 using Tareas.Shared.Models;
 
 namespace Tareas.API.Controllers
@@ -17,12 +20,28 @@ namespace Tareas.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAsync()
+        public async Task<IActionResult> GetAsync([FromQuery] PaginacionDTO paginacion)
         {
-            return Ok(await _context.Departamentos.Include(d => d.Empleados).ToListAsync());
+            var queryable = _context.Departamentos.Include(d => d.Empleados).AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(paginacion.Filtro)) queryable = queryable.Where(d => d.Nombre.ToUpper().Contains(paginacion.Filtro!.ToUpper()));
+
+            return Ok(await queryable.OrderBy(d => d.Nombre).Paginar(paginacion).ToListAsync());
         }
 
-        [HttpGet("idDepartamento:int")]
+        [HttpGet("TotalPaginas")]
+        public async Task<IActionResult> TotalPaginas([FromQuery] PaginacionDTO paginacion)
+        {
+            var queryable = _context.Departamentos.AsQueryable();
+            if (!string.IsNullOrWhiteSpace(paginacion.Filtro)) queryable = queryable.Where(d => d.Nombre.ToUpper().Contains(paginacion.Filtro!.ToUpper()));
+
+            double cantidadRegistros = await queryable.CountAsync();
+            double totalPaginas = Math.Ceiling(cantidadRegistros / paginacion.RegistrosPorPagina);
+
+            return Ok(totalPaginas);
+        }
+
+        [HttpGet("{idDepartamento:int}")]
         public async Task<IActionResult> GetAsync(int idDepartamento)
         {
             var departamento = await _context.Departamentos.FirstOrDefaultAsync(d => d.Id == idDepartamento);

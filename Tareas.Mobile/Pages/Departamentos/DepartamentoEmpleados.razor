@@ -1,0 +1,101 @@
+﻿@page "/departamentoEmpleados/{DepartamentoId:int}"
+
+@inject IRepository repositorio
+@inject SweetAlertService swAlSe
+
+@if(empleados is null)
+{
+    <p>Cargando...</p>
+}
+else
+{
+    <div class="card">
+        <div class="card-header">
+            <span>
+                <i class="oi oi-people" /> Personal asignado a
+            </span>
+            <p class="align-middle"><b>@departamento.Nombre.ToUpper()</b></p>
+        </div>
+
+        <div class="card-body">
+            <ListaGenerica ListaElementos="empleados">
+                <Body>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr class="text-center">
+                                <th width="300">Número</th>
+                                <th width="300">Nombre</th>
+                                <th width="300">Estatus</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach(var empleado in empleados){
+                                <tr>
+                                    <td class="align-middle"><a style="text-decoration:none" href="/empleados/editar/@empleado.Id">@empleado.CveEmpleado</a></td>
+                                    <td class="align-middle">@empleado.Nombre</td>
+                                    <td class="align-middle">@empleado.Estatus</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </Body>
+            </ListaGenerica>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public int DepartamentoId { get; set; }
+
+    private List<Empleado> empleados;
+
+    private Departamento departamento;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await BuscaDepartamento();
+        if (departamento is not null) await BuscaTrabajadores();
+    }
+
+    private async Task BuscaDepartamento()
+    {
+        var responseHttp = await repositorio.Get<Departamento>($"/api/departamentos/{DepartamentoId}");
+
+        if (responseHttp.Error)
+        {
+            if(responseHttp.HttpResponseMessage.StatusCode == HttpStatusCode.NotFound)
+            {
+                await swAlSe.FireAsync("Error", "No se encontró el departamento con el Id solicitado.", SweetAlertIcon.Error);
+                return;
+            }
+
+            var message = await responseHttp.GetErrorMessageAsync();
+            await swAlSe.FireAsync("Error", message, SweetAlertIcon.Error);
+            return;
+        }
+
+        departamento = responseHttp.Response;
+    }
+
+    private async Task BuscaTrabajadores()
+    {
+        var responseHttp = await repositorio.Get<List<Empleado>>($"/api/empleados/empleadosByDepto/{DepartamentoId}");
+
+        if (responseHttp.Error)
+        {
+            if(responseHttp.HttpResponseMessage.StatusCode == HttpStatusCode.NotFound)
+            {
+                await swAlSe.FireAsync("Error", "No hay trabajadores asignados a este departamento", SweetAlertIcon.Error);
+                return;
+            }
+
+            var message = await responseHttp.GetErrorMessageAsync();
+            await swAlSe.FireAsync("Error", message, SweetAlertIcon.Error);
+            return;
+        }
+
+        empleados = responseHttp.Response;
+    }
+}

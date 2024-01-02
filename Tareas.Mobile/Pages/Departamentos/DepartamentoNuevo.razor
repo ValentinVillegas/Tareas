@@ -1,0 +1,42 @@
+﻿@page "/departamentos/nuevo"
+
+@inject IRepository repositorio
+@inject SweetAlertService swAlSe
+@inject NavigationManager navManager
+
+<h3>Nuevo departamento</h3>
+
+<DepartamentoForm @ref="departamentoForm" Departamento="departamento" OnValidSubmit="GuardarDepartamentoAsync" ReturnAction="Regresar"/>
+
+@code {
+    private Departamento departamento = new();
+
+    private DepartamentoForm departamentoForm;
+
+    private async Task GuardarDepartamentoAsync()
+    {
+        var responseHttp = await repositorio.Post("/api/departamentos", departamento);
+
+        if (responseHttp.Error)
+        {
+            var message = await responseHttp.GetErrorMessageAsync();
+            await swAlSe.FireAsync("Error", message, SweetAlertIcon.Error);
+            return;
+        }
+
+        await swAlSe.FireAsync(new SweetAlertOptions{
+            Title = "Proceso terminado",
+            Text = "Departamento guardado correctamente",
+            Icon = SweetAlertIcon.Success,
+            Timer = 1500
+        });
+
+        departamentoForm.FormularioEnviado = true;
+        Regresar();
+    }
+
+    private void Regresar()
+    {
+        navManager.NavigateTo("/departamentos");
+    }
+}

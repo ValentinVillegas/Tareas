@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Tareas.API.Data;
+using Tareas.API.Helpers;
+using Tareas.Shared.DTOs;
 using Tareas.Shared.Models;
 
 namespace Tareas.API.Controllers
@@ -17,9 +19,26 @@ namespace Tareas.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAsync()
+        public async Task<IActionResult> GetAsync([FromQuery] PaginacionDTO paginacion)
         {
-            return Ok(await _context.Rubros.Include(r => r.Encargados).ToListAsync());
+            var queryable = _context.Rubros.Include(r => r.Encargados).AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(paginacion.Filtro)) queryable = queryable.Where(r => r.Nombre.ToUpper().Contains(paginacion.Filtro.ToUpper()));
+
+            return Ok(await queryable.OrderBy(r => r.Nombre).Paginar(paginacion).ToListAsync());
+        }
+
+        [HttpGet("TotalPaginas")]
+        public async Task<IActionResult> TotalPaginas([FromQuery] PaginacionDTO paginacion)
+        {
+            var queryable = _context.Rubros.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(paginacion.Filtro)) queryable = queryable.Where(r => r.Nombre.ToUpper().Contains(paginacion.Filtro.ToUpper()));
+
+            double cantidadRegistros = await queryable.CountAsync();
+            double totalPaginas = Math.Ceiling(cantidadRegistros / paginacion.RegistrosPorPagina);
+
+            return Ok(totalPaginas);
         }
 
         [HttpGet("{id:int}")]
