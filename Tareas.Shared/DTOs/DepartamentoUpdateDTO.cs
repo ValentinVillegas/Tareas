@@ -6,9 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Tareas.Shared.Enums;
 
-namespace Tareas.Shared.Models
+namespace Tareas.Shared.DTOs
 {
-    public class Departamento
+    public class DepartamentoUpdateDTO
     {
         public int Id { get; set; }
 
@@ -18,10 +18,5 @@ namespace Tareas.Shared.Models
         public string Nombre { get; set; } = null!;
 
         public EstatusDepartamento Cancelo { get; set; } = EstatusDepartamento.Activo;
-
-        public ICollection<Empleado>? Empleados { get; set; }
-
-        [Display(Name = "Cantidad Empleados")]
-        public int CantEmpleados => Empleados == null ? 0 : Empleados.Count;
     }
 }

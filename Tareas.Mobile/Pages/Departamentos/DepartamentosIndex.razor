@@ -17,6 +17,26 @@ else
         </div>
 
         <div class="card-body">
+            @* <table class="table table-striped">
+                <thead>
+                    <tr class=" text-center">
+                        <th width="300">Nombre</th>
+                        <th width="300">Trabajadores</th>
+                        <th width="300">Estatus</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <Virtualize Items="@Departamentos" Context="departamento" >
+                        <tr>
+                            <td class="align-middle"><a href="/departamentos/editar/@departamento.Id" style="text-decoration:none;">@departamento.Nombre</a></td>
+                            <td class="align-middle">@departamento.CantEmpleados</td>
+                            <td class="align-middle">@departamento.Estatus.ToString()</td>
+                        </tr>
+                    </Virtualize>
+                </tbody>
+            </table> *@
+
             <ListaGenerica ListaElementos="Departamentos">
                 <Body>
                     <table class="table table-striped">
@@ -34,7 +54,7 @@ else
                                 <tr>
                                     <td class="align-middle"><a href="/departamentos/editar/@departamento.Id" style="text-decoration:none;">@departamento.Nombre</a></td>
                                     <td class="align-middle">@departamento.CantEmpleados</td>
-                                    <td class="align-middle">@departamento.Estatus.ToString()</td>
+                                    <td class="align-middle">@departamento.Cancelo.ToString()</td>
                                 </tr>
                             }
                         </tbody>

@@ -50,10 +50,17 @@ namespace Tareas.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostAsync(Departamento departamento)
+        public async Task<IActionResult> PostAsync(DepartamentoCreateDTO departamentoCreate)
         {
             try
             {
+                var departamento = new Departamento
+                {
+                    Id = departamentoCreate.Id,
+                    Nombre = departamentoCreate.Nombre,
+                    Cancelo = departamentoCreate.Cancelo
+                };
+
                 _context.Departamentos.Add(departamento);
                 await _context.SaveChangesAsync();
                 return Ok(departamento);
@@ -71,10 +78,16 @@ namespace Tareas.API.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> PutAsync(Departamento departamento)
+        public async Task<IActionResult> PutAsync(DepartamentoUpdateDTO departamentoUpdate)
         {
             try
             {
+                var departamento = new Departamento { 
+                    Id = departamentoUpdate.Id,
+                    Nombre = departamentoUpdate.Nombre,
+                    Cancelo = departamentoUpdate.Cancelo
+                };
+
                 _context.Departamentos.Update(departamento);
                 await _context.SaveChangesAsync();
                 return Ok(departamento);
@@ -91,10 +104,10 @@ namespace Tareas.API.Controllers
             }
         }
 
-        [HttpDelete("{idDepartamento:int}")]
-        public async Task<IActionResult> DeleteAsync(int id)
+        [HttpDelete("{departamentoId:int}")]
+        public async Task<IActionResult> DeleteAsync(int departamentoId)
         {
-            var departamento = await _context.Departamentos.FirstOrDefaultAsync(d => d.Id == id);
+            var departamento = await _context.Departamentos.FirstOrDefaultAsync(d => d.Id == departamentoId);
 
             if (departamento == null) return NotFound();
 

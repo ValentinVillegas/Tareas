@@ -24,7 +24,7 @@ namespace Tareas.Shared.Models
 
         public EstatusEmpleado Estatus { get; set; } = EstatusEmpleado.Activo;
 
-        public Departamento? Departamento { get; set; }
         public int DepartamentoId { get; set; }
+        public Departamento Departamento { get; set; } = null!;
     }
 }

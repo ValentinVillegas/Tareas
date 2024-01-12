@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 using Tareas.API.Data;
+using Tareas.API.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +11,7 @@ builder.Services.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.Re
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<DataContext>(x => x.UseSqlServer("name=ConexionBD"));
+builder.Services.AddScoped<ITareasHelper, TareasHelper>();
 //builder.Services.AddTransient<SeedDB>();
 
 var app = builder.Build();

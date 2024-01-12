@@ -13,6 +13,8 @@ namespace Tareas.API.Data
         public DbSet<Empleado> Empleados { get; set; }
         public DbSet<Rubro> Rubros { get; set; }
         public DbSet<RubroEncargados> RubrosEncargados { get; set; }
+        public DbSet<UnidadNegocio> UnidadesNegocio { get; set; }
+        public DbSet<Equipo> Equipos { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
