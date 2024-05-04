@@ -45,9 +45,16 @@ namespace Tareas.API.Controllers
         [HttpGet("{idEmpleado:int}")]
         public async Task<IActionResult> GetAsync(int idEmpleado)
         {
-            var empleado = await _context.Empleados.FirstOrDefaultAsync(emp => emp.Id == idEmpleado);
+            var empleado = await _context.Empleados.Include(e => e.Departamento).FirstOrDefaultAsync(emp => emp.Id == idEmpleado);
             if (empleado == null) return NotFound();
-            return Ok(empleado);
+            return Ok(new EmpleadoDTO { 
+                Id = empleado.Id, 
+                CveEmpleado = empleado.CveEmpleado, 
+                Nombre = empleado.Nombre, 
+                Cancelo = empleado.Cancelo, 
+                DepartamentoId = empleado.DepartamentoId,
+                Departamento = empleado.Departamento.Nombre
+            });
         }
 
         [HttpGet("EmpleadosByDepto/{departamentoId:int}")]
@@ -59,10 +66,18 @@ namespace Tareas.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostAsync(Empleado empleado)
+        public async Task<IActionResult> PostAsync(EmpleadoCreateDTO empleadoCreateDto)
         {
             try
             {
+                var empleado = new Empleado { 
+                    Id = empleadoCreateDto.Id,
+                    CveEmpleado = empleadoCreateDto.CveEmpleado,
+                    Nombre = empleadoCreateDto.Nombre,
+                    Cancelo = empleadoCreateDto.Cancelo,
+                    DepartamentoId = empleadoCreateDto.DepartamentoId
+                };
+
                 _context.Empleados.Add(empleado);
                 await _context.SaveChangesAsync();
                 return Ok(empleado);
@@ -74,10 +89,19 @@ namespace Tareas.API.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> PutAsync(Empleado empleado)
+        public async Task<IActionResult> PutAsync(EmpleadoUpdateDto empleadoUpdateDto)
         {
             try
             {
+                var empleado = new Empleado
+                {
+                    Id = empleadoUpdateDto.Id,
+                    CveEmpleado = empleadoUpdateDto.CveEmpleado,
+                    Nombre = empleadoUpdateDto.Nombre,
+                    Cancelo = empleadoUpdateDto.Cancelo,
+                    DepartamentoId = empleadoUpdateDto.DepartamentoId
+                };
+
                 _context.Empleados.Update(empleado);
                 await _context.SaveChangesAsync();
                 return Ok(empleado);
@@ -86,18 +110,6 @@ namespace Tareas.API.Controllers
             {
                 return BadRequest(exception.Message);
             }
-        }
-
-        [HttpDelete("{idEmpleado:int}")]
-        public async Task<IActionResult> DeleteAsync(int idEmpleado)
-        {
-            var empleado = await _context.Empleados.FirstOrDefaultAsync(emp => emp.Id == idEmpleado);
-
-            if(empleado == null) return NotFound();
-
-            _context.Empleados.Remove(empleado);
-            await _context.SaveChangesAsync();
-            return NoContent();
         }
     }
 }

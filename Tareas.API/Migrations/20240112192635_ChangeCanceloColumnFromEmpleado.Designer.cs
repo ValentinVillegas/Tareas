@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Tareas.API.Data;
 
@@ -10,9 +11,11 @@ using Tareas.API.Data;
 namespace Tareas.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240112192635_ChangeCanceloColumnFromEmpleado")]
+    partial class ChangeCanceloColumnFromEmpleado
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -42,7 +45,7 @@ namespace Tareas.API.Migrations
                     b.HasIndex("Nombre")
                         .IsUnique();
 
-                    b.ToTable("Departamentos", (string)null);
+                    b.ToTable("Departamentos");
                 });
 
             modelBuilder.Entity("Tareas.Shared.Models.Empleado", b =>
@@ -73,7 +76,7 @@ namespace Tareas.API.Migrations
 
                     b.HasIndex("DepartamentoId");
 
-                    b.ToTable("Empleados", (string)null);
+                    b.ToTable("Empleados");
                 });
 
             modelBuilder.Entity("Tareas.Shared.Models.Equipo", b =>
@@ -114,7 +117,7 @@ namespace Tareas.API.Migrations
 
                     b.HasIndex("UnidadNegocioId");
 
-                    b.ToTable("Equipos", (string)null);
+                    b.ToTable("Equipos");
                 });
 
             modelBuilder.Entity("Tareas.Shared.Models.Rubro", b =>
@@ -141,7 +144,7 @@ namespace Tareas.API.Migrations
                     b.HasIndex("Nombre")
                         .IsUnique();
 
-                    b.ToTable("Rubros", (string)null);
+                    b.ToTable("Rubros");
                 });
 
             modelBuilder.Entity("Tareas.Shared.Models.RubroEncargados", b =>
@@ -182,7 +185,7 @@ namespace Tareas.API.Migrations
 
                     b.HasIndex("RubroId");
 
-                    b.ToTable("RubrosEncargados", (string)null);
+                    b.ToTable("RubrosEncargados");
                 });
 
             modelBuilder.Entity("Tareas.Shared.Models.UnidadNegocio", b =>
@@ -204,7 +207,7 @@ namespace Tareas.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UnidadesNegocio", (string)null);
+                    b.ToTable("UnidadesNegocio");
                 });
 
             modelBuilder.Entity("Tareas.Shared.Models.Empleado", b =>

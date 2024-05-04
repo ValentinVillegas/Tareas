@@ -1,0 +1,67 @@
+﻿@page "/UnidadesNegocio"
+@inject IRepository repositorio
+@inject SweetAlertService SwAlSe
+
+<h3>UnidadesNegocioIndex</h3>
+
+@if(UnidadesNegocio is null)
+{
+    <p>Cargando...</p>
+}
+else
+{
+    <div class="card">
+        <div class="card-header">
+
+        </div>
+
+        <div class="card-body">
+            <ListaGenerica ListaElementos="UnidadesNegocio" >
+                <Body>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <td width="300">Clave</td>
+                                <td width="300">Nombre</td>
+                                <td width="300">Equipos</td>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach(var unidadNegocio in UnidadesNegocio){
+                                <tr>
+                                    <td class="align-middle">@unidadNegocio.Id</td>
+                                    <td class="align-middle">@unidadNegocio.Nombre</td>
+                                    <td class="align-middle"></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </Body>
+            </ListaGenerica>
+        </div>
+    </div>
+}
+
+@code {
+    public List<UnidadNegocio> UnidadesNegocio { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargaUnidadesNegocio();
+    }
+
+    private async Task CargaUnidadesNegocio()
+    {
+        var responseHttp = await repositorio.Get<List<UnidadNegocio>>("/api/UnidadesNegocio");
+
+        if (responseHttp.Error)
+        {
+            var message = await responseHttp.GetErrorMessageAsync();
+            await SwAlSe.FireAsync("Error", message, SweetAlertIcon.Error);
+            return;
+        }
+
+        UnidadesNegocio = responseHttp.Response;
+    }
+}

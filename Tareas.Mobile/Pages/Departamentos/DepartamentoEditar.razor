@@ -1,9 +1,5 @@
 ﻿@page "/departamentos/editar/{DepartamentoId:int}"
 
-@inject IRepository repositorio
-@inject NavigationManager navManager
-@inject SweetAlertService swAlSe
-
 @if(departamento is null)
 {
     <p>Cargando...</p>
@@ -13,47 +9,4 @@ else
     <h3>Editar departamento</h3>
 
     <DepartamentoForm Departamento="departamento" OnValidSubmit="GuardarDepartamentoAsync" ReturnAction="Regresar"/>
-}
-
-@code {
-    [Parameter]
-    public int DepartamentoId { get; set; }
-
-    private Departamento? departamento;
-
-    protected override async Task OnInitializedAsync()
-    {
-        await BuscarDepartamento();
-    }
-
-    private async Task BuscarDepartamento()
-    {
-        var responseHttp = await repositorio.Get<Departamento>($"/api/Departamentos/{DepartamentoId}");
-
-        if (responseHttp.Error)
-        {
-            if (responseHttp.HttpResponseMessage.StatusCode == HttpStatusCode.NotFound)
-            {
-                navManager.NavigateTo("/departamentos");
-                return;
-            }
-
-            var message = await responseHttp.GetErrorMessageAsync();
-            await swAlSe.FireAsync("Error", message, SweetAlertIcon.Error);
-            return;
-        }
-
-        departamento = responseHttp.Response;
-    }
-
-    private void GuardarDepartamentoAsync()
-    {
-
-        Regresar();
-    }
-
-    private void Regresar()
-    {
-        navManager.NavigateTo("/departamentos");
-    }
 }

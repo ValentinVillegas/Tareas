@@ -1,8 +1,5 @@
 ﻿@page "/departamentoEmpleados/{DepartamentoId:int}"
 
-@inject IRepository repositorio
-@inject SweetAlertService swAlSe
-
 @if(empleados is null)
 {
     <p>Cargando...</p>
@@ -34,7 +31,7 @@ else
                                 <tr>
                                     <td class="align-middle"><a style="text-decoration:none" href="/empleados/editar/@empleado.Id">@empleado.CveEmpleado</a></td>
                                     <td class="align-middle">@empleado.Nombre</td>
-                                    <td class="align-middle">@empleado.Estatus</td>
+                                    <td class="align-middle">@empleado.Cancelo</td>
                                 </tr>
                             }
                         </tbody>
@@ -43,59 +40,4 @@ else
             </ListaGenerica>
         </div>
     </div>
-}
-
-@code {
-    [Parameter]
-    public int DepartamentoId { get; set; }
-
-    private List<Empleado> empleados;
-
-    private Departamento departamento;
-
-    protected override async Task OnInitializedAsync()
-    {
-        await BuscaDepartamento();
-        if (departamento is not null) await BuscaTrabajadores();
-    }
-
-    private async Task BuscaDepartamento()
-    {
-        var responseHttp = await repositorio.Get<Departamento>($"/api/departamentos/{DepartamentoId}");
-
-        if (responseHttp.Error)
-        {
-            if(responseHttp.HttpResponseMessage.StatusCode == HttpStatusCode.NotFound)
-            {
-                await swAlSe.FireAsync("Error", "No se encontró el departamento con el Id solicitado.", SweetAlertIcon.Error);
-                return;
-            }
-
-            var message = await responseHttp.GetErrorMessageAsync();
-            await swAlSe.FireAsync("Error", message, SweetAlertIcon.Error);
-            return;
-        }
-
-        departamento = responseHttp.Response;
-    }
-
-    private async Task BuscaTrabajadores()
-    {
-        var responseHttp = await repositorio.Get<List<Empleado>>($"/api/empleados/empleadosByDepto/{DepartamentoId}");
-
-        if (responseHttp.Error)
-        {
-            if(responseHttp.HttpResponseMessage.StatusCode == HttpStatusCode.NotFound)
-            {
-                await swAlSe.FireAsync("Error", "No hay trabajadores asignados a este departamento", SweetAlertIcon.Error);
-                return;
-            }
-
-            var message = await responseHttp.GetErrorMessageAsync();
-            await swAlSe.FireAsync("Error", message, SweetAlertIcon.Error);
-            return;
-        }
-
-        empleados = responseHttp.Response;
-    }
 }

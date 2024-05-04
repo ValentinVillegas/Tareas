@@ -6,9 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Tareas.Shared.Enums;
 
-namespace Tareas.Shared.Models
+namespace Tareas.Shared.DTOs
 {
-    public class Empleado
+    public class EmpleadoUpdateDto
     {
         public int Id { get; set; }
 
@@ -25,6 +25,5 @@ namespace Tareas.Shared.Models
         public EstatusEmpleado Cancelo { get; set; } = EstatusEmpleado.Activo;
 
         public int DepartamentoId { get; set; }
-        public Departamento Departamento { get; set; } = null!;
     }
 }

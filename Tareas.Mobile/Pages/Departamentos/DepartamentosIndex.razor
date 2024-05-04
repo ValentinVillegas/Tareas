@@ -1,6 +1,4 @@
 ﻿@page "/departamentos"
-@inject IRepository repositorio
-@inject SweetAlertService swAlSe
 
 @if (Departamentos is null)
 {
@@ -63,27 +61,4 @@ else
             </ListaGenerica>
         </div>
     </div>
-}
-
-@code {
-    public List<Departamento> Departamentos { get; set; }
-
-    protected override async Task OnInitializedAsync()
-    {
-        await CargaDepartamentos();
-    }
-
-    private async Task CargaDepartamentos()
-    {
-        var responseHttp = await repositorio.Get<List<Departamento>>("/api/departamentos");
-
-        if (responseHttp.Error)
-        {
-            var message = await responseHttp.GetErrorMessageAsync();
-            await swAlSe.FireAsync("Error", message, SweetAlertIcon.Error);
-            return;
-        }
-
-        Departamentos = responseHttp.Response;
-    }
 }

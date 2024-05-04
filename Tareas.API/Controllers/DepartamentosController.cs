@@ -44,7 +44,7 @@ namespace Tareas.API.Controllers
         [HttpGet("{idDepartamento:int}")]
         public async Task<IActionResult> GetAsync(int idDepartamento)
         {
-            var departamento = await _context.Departamentos.FirstOrDefaultAsync(d => d.Id == idDepartamento);
+            var departamento = await _context.Departamentos.Include(d => d.Empleados).FirstOrDefaultAsync(d => d.Id == idDepartamento);
             if (departamento == null) return NotFound();
             return Ok(departamento);
         }
@@ -102,18 +102,6 @@ namespace Tareas.API.Controllers
             {
                 return BadRequest(exception.Message);
             }
-        }
-
-        [HttpDelete("{departamentoId:int}")]
-        public async Task<IActionResult> DeleteAsync(int departamentoId)
-        {
-            var departamento = await _context.Departamentos.FirstOrDefaultAsync(d => d.Id == departamentoId);
-
-            if (departamento == null) return NotFound();
-
-            _context.Departamentos.Remove(departamento);
-            await _context.SaveChangesAsync();
-            return NoContent();
         }
     }
 }

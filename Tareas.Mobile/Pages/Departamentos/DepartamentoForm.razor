@@ -1,7 +1,4 @@
 ﻿@using Tareas.Shared.Enums;
-@inject IRepository repositorio
-@inject SweetAlertService swAlSe
-
 <NavigationLock OnBeforeInternalNavigation="OnBeforeInternalNavigation"/>
 
 <EditForm EditContext="editContext" OnValidSubmit="OnValidSubmit">
@@ -37,48 +34,3 @@
     <button class="btn btn-success" type="submit"><i class="oi oi-check" /> Guardar</button>
     <button type="button" class="btn btn-warning" @onclick="ReturnAction"><i class="oi oi-chevron-left" /> Regresar</button>
 </EditForm>
-
-@code {
-    [Parameter]
-    [EditorRequired]
-    public Departamento Departamento { get; set; } = null!;
-
-    [Parameter]
-    [EditorRequired]
-    public EventCallback OnValidSubmit { get; set; }
-
-    [Parameter]
-    [EditorRequired]
-    public EventCallback ReturnAction { get; set; }
-
-    public bool FormularioEnviado { get; set; }
-
-    private EditContext editContext = null;
-
-    protected override void OnInitialized()
-    {
-        editContext = new(Departamento);
-    }
-
-
-    private async Task OnBeforeInternalNavigation(LocationChangingContext context)
-    {
-        var formularioModificado = editContext.IsModified();
-
-        if (!formularioModificado || FormularioEnviado) return;
-
-        var confirm = await swAlSe.FireAsync(new SweetAlertOptions
-        {
-            Title = "Confirmación",
-            Text = "¿Deseas salir sin guardar los cambios?",
-            Icon = SweetAlertIcon.Question,
-            ShowCancelButton = true,
-            CancelButtonText = "No",
-            ConfirmButtonText = "Si"
-        });
-
-        if (!string.IsNullOrEmpty(confirm.Value)) return;
-
-        context.PreventNavigation();
-    }
-}

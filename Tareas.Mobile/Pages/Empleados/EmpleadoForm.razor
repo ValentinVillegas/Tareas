@@ -42,7 +42,7 @@
     <div class="mb-3">
         <label>Estatus:</label>
         <div>
-            <select class="form-select" @bind="@Empleado.Estatus">
+            <select class="form-select" @bind="@Empleado.Cancelo">
                 @foreach(var estatus in Enum.GetValues(typeof(EstatusEmpleado)))
                 {
                     <option value="@estatus">@estatus</option>
