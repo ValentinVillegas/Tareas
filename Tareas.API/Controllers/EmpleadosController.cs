@@ -45,15 +45,19 @@ namespace Tareas.API.Controllers
         [HttpGet("{idEmpleado:int}")]
         public async Task<IActionResult> GetAsync(int idEmpleado)
         {
-            var empleado = await _context.Empleados.Include(e => e.Departamento).FirstOrDefaultAsync(emp => emp.Id == idEmpleado);
-            if (empleado == null) return NotFound();
-            return Ok(new EmpleadoDTO { 
-                Id = empleado.Id, 
-                CveEmpleado = empleado.CveEmpleado, 
-                Nombre = empleado.Nombre, 
-                Cancelo = empleado.Cancelo, 
+            var empleado = await _context.Empleados
+                .Include(e => e.Departamento)
+                .FirstOrDefaultAsync(emp => emp.Id == idEmpleado);
+
+            if (empleado is null) return NotFound();
+
+            return Ok(new EmpleadoDTO
+            {
+                Id = empleado.Id,
+                CveEmpleado = empleado.CveEmpleado,
+                Nombre = empleado.Nombre,
+                Cancelo = empleado.Cancelo,
                 DepartamentoId = empleado.DepartamentoId,
-                Departamento = empleado.Departamento.Nombre
             });
         }
 

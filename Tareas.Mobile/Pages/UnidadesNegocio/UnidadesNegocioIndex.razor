@@ -1,6 +1,4 @@
 ﻿@page "/UnidadesNegocio"
-@inject IRepository repositorio
-@inject SweetAlertService SwAlSe
 
 <h3>UnidadesNegocioIndex</h3>
 
@@ -41,27 +39,4 @@ else
             </ListaGenerica>
         </div>
     </div>
-}
-
-@code {
-    public List<UnidadNegocio> UnidadesNegocio { get; set; }
-
-    protected override async Task OnInitializedAsync()
-    {
-        await CargaUnidadesNegocio();
-    }
-
-    private async Task CargaUnidadesNegocio()
-    {
-        var responseHttp = await repositorio.Get<List<UnidadNegocio>>("/api/UnidadesNegocio");
-
-        if (responseHttp.Error)
-        {
-            var message = await responseHttp.GetErrorMessageAsync();
-            await SwAlSe.FireAsync("Error", message, SweetAlertIcon.Error);
-            return;
-        }
-
-        UnidadesNegocio = responseHttp.Response;
-    }
 }

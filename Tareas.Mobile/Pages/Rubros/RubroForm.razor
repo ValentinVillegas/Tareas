@@ -1,6 +1,4 @@
-﻿@inject SweetAlertService swAlSe
-
-<NavigationLock OnBeforeInternalNavigation="OnBeforeInternalNavigation"/>
+﻿<NavigationLock OnBeforeInternalNavigation="OnBeforeInternalNavigation"/>
 
 <EditForm EditContext="editContext" OnValidSubmit="OnValidSubmit">
     <DataAnnotationsValidator />
@@ -19,54 +17,3 @@
     <button class="btn btn-success" type="submit"><i class="oi oi-check" /></button>
     <button type="button" class="btn btn-warning" @onclick="ReturnAction"><i class="oi oi-chevron-left" /></button>
 </EditForm>
-
-@code {
-    private EditContext editContext = null;
-    public bool formularioEnviado { get; set; }
-
-    [Parameter]
-    [EditorRequired]
-    public Rubro Rubro { get; set; } = null!;
-
-    [Parameter]
-    [EditorRequired]
-    public EventCallback OnValidSubmit { get; set; }
-
-    [Parameter]
-    [EditorRequired]
-    public EventCallback ReturnAction { get; set; }
-
-    protected override void OnInitialized()
-    {
-        editContext = new(Rubro);
-    }
-
-    private async Task OnBeforeInternalNavigation(LocationChangingContext context)
-    {
-        var formularioModificado = editContext.IsModified();
-
-        if (!formularioModificado || formularioEnviado) return;
-
-        var confirmacion = await swAlSe.FireAsync(new SweetAlertOptions
-        {
-            Title = "Confirmación",
-            Text = "¿Deseas abandonar la página y perder los cambios?",
-            Icon = SweetAlertIcon.Question,
-            ShowCancelButton = true,
-            CancelButtonText = "No",
-            ConfirmButtonText = "Si"
-        });
-
-        if (!string.IsNullOrEmpty(confirmacion.Value)) return;
-
-        context.PreventNavigation();
-    }
-
-    // private List<RubroEncargados> encargados;
-
-    // protected override void OnParametersSet()
-    // {
-    //     encargados = Rubro.Encargados!.ToList();
-
-    // }
-}

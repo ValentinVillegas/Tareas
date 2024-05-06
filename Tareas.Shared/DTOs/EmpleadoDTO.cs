@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Tareas.Shared.Enums;
+using Tareas.Shared.Models;
 
 namespace Tareas.Shared.DTOs
 {
@@ -25,7 +26,5 @@ namespace Tareas.Shared.DTOs
         public EstatusEmpleado Cancelo { get; set; } = EstatusEmpleado.Activo;
 
         public int DepartamentoId { get; set; }
-
-        public string Departamento { get; set; } = null!;
     }
 }

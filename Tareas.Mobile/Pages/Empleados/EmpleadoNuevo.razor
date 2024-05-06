@@ -1,33 +1,5 @@
 ﻿@page "/empleados/nuevo"
-@inject IRepository repositorio
-@inject NavigationManager navManager
-@inject SweetAlertService swAlSe
 
 <h3>Nuevo empleado</h3>
 
 <EmpleadoForm @ref="empleadoForm" Empleado="empleado" OnValidSubmit="Crear" ReturnAction="Regresar"/>
-
-@code {
-    private Empleado empleado = new();
-    private EmpleadoForm empleadoForm;
-
-    private async Task Crear()
-    {
-        var responseHttp = await repositorio.Post("/api/empleados", empleado);
-
-        if (responseHttp.Error)
-        {
-            var message = await responseHttp.GetErrorMessageAsync();
-            await swAlSe.FireAsync("Error", message);
-            return;
-        }
-
-        empleadoForm.formularioEnviado = true;
-        Regresar();
-    }
-
-    private void Regresar()
-    {
-        navManager.NavigateTo("/empleados");
-    }
-}

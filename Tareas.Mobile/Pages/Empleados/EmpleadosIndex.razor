@@ -1,5 +1,4 @@
 ﻿@page "/empleados"
-@inject IRepository repositorio
 
 @if(Empleados is null)
 {
@@ -45,15 +44,4 @@ else
             </ListaGenerica>
         </div>
     </div>
-}
-
-@code {
-    public List<Empleado> Empleados { get; set; }
-
-    protected override async Task OnInitializedAsync()
-    {
-        var responseHttp = await repositorio.Get<List<Empleado>>("/api/empleados");
-        Empleados = responseHttp.Response;
-    }
-
 }

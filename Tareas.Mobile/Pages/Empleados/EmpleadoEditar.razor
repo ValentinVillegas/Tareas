@@ -1,9 +1,5 @@
 ﻿@page "/empleados/editar/{EmpleadoId:int}"
 
-@inject IRepository repositorio
-@inject SweetAlertService swAlSe
-@inject NavigationManager navigationManager
-
 @if(empleado is null)
 {
     <p>Cargando...</p>
@@ -21,68 +17,4 @@ else
             <EmpleadoForm @ref="empleadoForm" Empleado="empleado" OnValidSubmit="GuardarAsync" ReturnAction="Regresar" />
         </div>
     </div>
-}
-
-@code {
-    [Parameter]
-    public int EmpleadoId { get; set; }
-
-    private EmpleadoForm empleadoForm;
-
-    private Empleado empleado;
-
-    protected override async Task OnInitializedAsync()
-    {
-        await BuscaEmpleado();
-    }
-
-    private async Task BuscaEmpleado()
-    {
-        var responseHttp = await repositorio.Get<Empleado>($"/api/empleados/{EmpleadoId}");
-
-        if (responseHttp.Error)
-        {
-            //NO SE ENCONTRÓ AL EMPLEADO CON EL ID PROPORCIONADO, SE REDIRIGE AL INDEX
-            if(responseHttp.HttpResponseMessage.StatusCode == HttpStatusCode.NotFound)
-            {
-                navigationManager.NavigateTo("/empleados");
-                return;
-            }
-
-            //OCURRIÓ ALGÚN ERROR, SE MUESTRA EN PANTALLA
-            var message = await responseHttp.GetErrorMessageAsync();
-            await swAlSe.FireAsync("Error", message, SweetAlertIcon.Error);
-            return;
-        }
-
-        empleado = responseHttp.Response;
-    }
-
-    private async void GuardarAsync()
-    {
-        var responseHttp = await repositorio.Put<Empleado>($"/api/empleados", empleado);
-
-        if (responseHttp.Error)
-        {
-            var message = await responseHttp.GetErrorMessageAsync();
-            await swAlSe.FireAsync("Error", message, SweetAlertIcon.Error);
-            return;
-        }
-
-        await swAlSe.FireAsync(new SweetAlertOptions
-        {
-            Title = "Proceso terminado",
-            Text = "Datos guardados correctamente",
-            Icon = SweetAlertIcon.Success,
-            Timer = 1500
-        });
-
-        empleadoForm.formularioEnviado = true;
-        Regresar();
-    }
-
-    private void Regresar()
-    {
-        navigationManager.NavigateTo("/empleados");
-    }
 }

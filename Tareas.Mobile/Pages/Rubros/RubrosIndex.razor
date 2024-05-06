@@ -1,7 +1,4 @@
 ﻿@page "/rubros"
-@inject IRepository repositorio
-@inject SweetAlertService swAlSe
-@inject NavigationManager navManager
 
 <h3>Catálogo de Rubros</h3>
 
@@ -60,49 +57,4 @@
             </ListaGenerica>
         </div>
     </div>
-}
-
-@code {
-    public List<Rubro> Rubros { get; set; }
-
-    protected override async Task OnInitializedAsync()
-    {
-        await LoadAsync();
-    }
-
-    private async Task LoadAsync()
-    {
-        var responseHttp = await repositorio.Get<List<Rubro>>("/api/rubros");
-        Rubros = responseHttp.Response;
-    }
-
-    private async Task EliminarRubroAsync(int idRubro)
-    {
-        var confirmacion = await swAlSe.FireAsync(new SweetAlertOptions
-        {
-            Title = "Confirmación",
-            Text = "¿Desea eliminar el rubro?",
-            Icon = SweetAlertIcon.Question,
-            ShowCancelButton = true,
-            CancelButtonText = "No",
-            ConfirmButtonText = "Si"
-        });
-
-        if (string.IsNullOrEmpty(confirmacion.Value)) return;
-
-        var responseHttp = await repositorio.Delete($"/api/rubros/{idRubro}");
-
-        if (responseHttp.Error)
-        {
-            if(responseHttp.HttpResponseMessage.StatusCode != HttpStatusCode.NotFound)
-            {
-                var message = await responseHttp.GetErrorMessageAsync();
-                await swAlSe.FireAsync("Error", message, SweetAlertIcon.Error);
-                return;
-            }
-        }
-
-        await LoadAsync();
-        StateHasChanged();
-    }
 }

@@ -1,33 +1,5 @@
 ﻿@page "/rubros/nuevo"
-@inject IRepository repository
-@inject NavigationManager navManager
-@inject SweetAlertService swAlSe
 
 <h3>Nuevo Rubro</h3>
 
 <RubroForm @ref="rubroForm" Rubro="rubro" OnValidSubmit="Crear" ReturnAction="Regresar"/>
-
-@code {
-    private Rubro rubro = new ();
-    private RubroForm rubroForm;
-
-    private async Task Crear()
-    {
-        var responseHttp = await repository.Post("/api/rubros", rubro);
-
-        if (responseHttp.Error)
-        {
-            var message = await responseHttp.GetErrorMessageAsync();
-            await swAlSe.FireAsync("Error", message);
-            return;
-        }
-
-        rubroForm.formularioEnviado = true;
-        Regresar();
-    }
-
-    private void Regresar()
-    {
-        navManager.NavigateTo("/rubros");
-    }
-}
